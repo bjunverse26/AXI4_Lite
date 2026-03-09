@@ -95,9 +95,9 @@ module axi_top #(
         .reg_rdata(reg_rdata),
 
         .control_reg(control_reg),
-        .status_reg(status_reg),
+        .status_reg(32'hABCD1234),
         .config_reg(config_reg),
-        .error_reg(error_reg)
+        .error_reg(32'h00000000)
     );
 
 endmodule
