@@ -22,7 +22,7 @@
 
 ### 1. AXI4-Lite Slave 서브시스템 직접 설계
 - Before: 단순 인터페이스 이해 수준
-- After: [`src/axi_lite_slave.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_lite_slave.sv), [`src/axi_register_map.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_register_map.sv), [`src/axi_top.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_top.sv)로 분리된 32-bit AXI4-Lite Slave 구조 설계
+- After: [`src/axi_lite_slave.sv`](src/axi_lite_slave.sv), [`src/axi_register_map.sv`](src/axi_register_map.sv), [`src/axi_top.sv`](src/axi_top.sv)로 분리된 32-bit AXI4-Lite Slave 구조 설계
 
 ### 2. 확장 가능한 16개 레지스터 맵 구현
 - Before: 소수 레지스터 중심의 단순 구조
@@ -34,7 +34,7 @@
 
 ### 4. 설계 결과를 정량적으로 검증
 - Before: 단순 읽기/쓰기 결과 확인 중심
-- After: [`sim/tb_axi.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/tb_axi.sv)의 4개 주요 시나리오, 5개 데이터 검증 케이스와 [`sim/axi_sva.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/axi_sva.sv)의 11개 Assertion, 6개 Coverage Point로 검증 범위를 수치화
+- After: [`sim/tb_axi.sv`](sim/tb_axi.sv)의 4개 주요 시나리오, 5개 데이터 검증 케이스와 [`sim/axi_sva.sv`](sim/axi_sva.sv)의 11개 Assertion, 6개 Coverage Point로 검증 범위를 수치화
 
 ## 기능
 
@@ -77,11 +77,11 @@ AXI4_Lite/
 
 ## 주요 파일
 
-- [`src/axi_top.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_top.sv): AXI Slave와 Register Map을 연결하는 Top Module
-- [`src/axi_lite_slave.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_lite_slave.sv): AXI4-Lite 읽기/쓰기 제어 로직
-- [`src/axi_register_map.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_register_map.sv): 레지스터 맵 및 데이터 저장 구조
-- [`sim/tb_axi.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/tb_axi.sv): Directed 기능 검증용 테스트벤치
-- [`sim/axi_sva.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/axi_sva.sv): AXI4-Lite 프로토콜 Assertion 및 Coverage
+- [`src/axi_top.sv`](src/axi_top.sv): AXI Slave와 Register Map을 연결하는 Top Module
+- [`src/axi_lite_slave.sv`](src/axi_lite_slave.sv): AXI4-Lite 읽기/쓰기 제어 로직
+- [`src/axi_register_map.sv`](src/axi_register_map.sv): 레지스터 맵 및 데이터 저장 구조
+- [`sim/tb_axi.sv`](sim/tb_axi.sv): Directed 기능 검증용 테스트벤치
+- [`sim/axi_sva.sv`](sim/axi_sva.sv): AXI4-Lite 프로토콜 Assertion 및 Coverage
 
 ## 결과
 
@@ -93,5 +93,5 @@ AXI4_Lite/
 
 ## 참고
 
-- 보드 제약 파일: [`constraints/Zybo-Z7-Master.xdc`](/c:/Users/rlaqj/Project/AXI4_Lite/constraints/Zybo-Z7-Master.xdc)
-- 프로젝트 문서: [`docs/0. AXI4-Lite Portfolio.pdf`](/c:/Users/rlaqj/Project/AXI4_Lite/docs/0.%20AXI4-Lite%20Portfolio.pdf)
+- 보드 제약 파일: [`constraints/Zybo-Z7-Master.xdc`](constraints/Zybo-Z7-Master.xdc)
+- 프로젝트 문서: [`docs/0. AXI4-Lite Portfolio.pdf`](docs/0.%20AXI4-Lite%20Portfolio.pdf)
