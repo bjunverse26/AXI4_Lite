@@ -1,48 +1,52 @@
-﻿# AXI4-Lite Slave Design and Verification Project
+﻿# AXI4-Lite Slave Design Project
 
-32-bit AXI4-Lite Slave? Register Map???ㅺ퀎?섍퀬, Directed Testbench 諛?SVA瑜??듯빐 湲곕뒫怨??꾨줈?좎퐳???④퍡 寃利앺븳 RTL ?꾨줈?앺듃?낅땲??
+32-bit AXI4-Lite Slave, Register Map, Testbench, 그리고 SVA 기반 프로토콜 검증을 포함한 RTL 설계 프로젝트입니다.
 
-## ?ㅻ뜑
+## 헤더
 
-**?꾨줈?앺듃 ?쒕ぉ**  
-AXI4-Lite Slave Design and Verification Project
+**프로젝트 제목**  
+AXI4-Lite Slave Verification Project
 
-**?쒖쨪 ?ㅻ챸**  
-32-bit AXI4-Lite Slave? 16媛??덉??ㅽ꽣 留듭쓣 吏곸젒 ?ㅺ퀎?섍퀬, ?뚯뒪?몃깽移섏? Assertion 湲곕컲 寃利??섍꼍?쇰줈 ?쎄린/?곌린 ?숈옉 諛?AXI4-Lite ?꾨줈?좎퐳 以???щ?瑜??뺤씤???꾨줈?앺듃?낅땲??
+**한줄 설명**  
+32-bit AXI4-Lite Slave와 16개 레지스터 맵을 설계하고, Directed Testbench와 SVA를 통해 읽기/쓰기 동작 및 프로토콜 준수를 검증한 프로젝트입니다.
 
-## ?듭떖 ?깃낵
+## 핵심 성과
 
-### 1. AXI4-Lite Slave ?쒕툕?쒖뒪??吏곸젒 ?ㅺ퀎
-- Before: ?⑥닚 ?명꽣?섏씠???댄빐 ?섏?
-- After: [`src/axi_lite_slave.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_lite_slave.sv), [`src/axi_register_map.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_register_map.sv), [`src/axi_top.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_top.sv)濡?援ъ꽦??32-bit AXI4-Lite Slave 援ъ“瑜??ㅺ퀎
+### 1. 기능 검증 중심에서 프로토콜 검증까지 확장
+- Before: 읽기/쓰기 결과 확인 위주의 기능 검증에 의존
+- After: `sim/axi_sva.sv`에 **11개의 Assertion**과 **6개의 Coverage Point**를 추가해 handshake, stability, reset, transaction order를 자동 검증
 
-### 2. ?뺤옣 媛?ν븳 16媛??덉??ㅽ꽣 留?援ы쁽
-- Before: ?뚯닔 ?덉??ㅽ꽣 以묒떖???⑥닚 援ъ“
-- After: 4媛?二쇱슂 ?덉??ㅽ꽣? 12媛??곗씠???덉??ㅽ꽣瑜??ы븿??珥?16媛?二쇱냼 怨듦컙 援ъ꽦
+### 2. 단순 레지스터 접근에서 구조화된 16개 레지스터 맵으로 확장
+- Before: 핵심 제어/상태 레지스터 중심의 제한적인 검증 구조
+- After: `src/axi_register_map.sv`에 **4개의 주요 레지스터**와 **12개의 데이터 레지스터**를 포함한 **총 16개 주소 공간** 구현
 
-### 3. ?ㅼ뼇???곌린 ??대컢 耳?댁뒪瑜?泥섎━?섎뒗 FSM 援ы쁽
-- Before: 二쇱냼? ?곗씠?곌? ??긽 媛숈? ?쒖꽌濡??꾩갑?쒕떎怨?媛?뺥븷 媛?μ꽦 議댁옱
-- After: `AW->W`, `W->AW`, `AW+W ?숈떆`??3媛吏 ?곌린 ?쒕굹由ъ삤瑜?泥섎━?섎룄濡?Write FSM ?ㅺ퀎
+### 3. 쓰기 경로를 다양한 AXI4-Lite 타이밍 케이스까지 대응하도록 개선
+- Before: 단일 쓰기 순서만 가정할 경우 정상적인 버스 시나리오 일부를 놓칠 수 있음
+- After: `src/axi_lite_slave.sv`에서 **3가지 쓰기 도착 케이스**(`AW->W`, `W->AW`, `AW+W 동시`)를 처리하도록 FSM 구성
 
-### 4. ?ㅺ퀎 寃곌낵瑜??뺣웾?곸쑝濡?寃利?- Before: ?⑥닚 ?쎄린/?곌린 寃곌낵 ?뺤씤 以묒떖
-- After: [`sim/tb_axi.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/tb_axi.sv)??4媛?二쇱슂 ?쒕굹由ъ삤, 5媛??곗씠??寃利?耳?댁뒪? [`sim/axi_sva.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/axi_sva.sv)??11媛?Assertion, 6媛?Coverage Point濡?寃利?踰붿쐞瑜??섏튂??
-## 湲곕뒫
+### 4. 검증 결과를 수치로 설명 가능한 형태로 구체화
+- Before: 프로젝트 설명만으로는 검증 범위와 결과를 한눈에 파악하기 어려움
+- After: `sim/tb_axi.sv`에서 **4개 주요 시나리오**, **5개 데이터 검증 케이스**를 수행하도록 구성해 검증 범위를 명확히 제시
 
-- 32-bit AXI4-Lite Slave ?명꽣?섏씠???ㅺ퀎
-- AW, W, B, AR, R 梨꾨꼸 遺꾨━ 湲곕컲 ?몃옖??뀡 泥섎━
-- Read FSM / Write FSM 湲곕컲 ?쒖뼱 濡쒖쭅 援ы쁽
-- `WSTRB`瑜??댁슜??Byte-enable Write 吏??- Control, Status, Config, Error, Data Register瑜??ы븿??16媛??덉??ㅽ꽣 留?援ъ꽦
-- 二쇱냼/?곗씠?곗쓽 ?쒖감, ??닚, ?숈떆 ?꾩갑??泥섎━?섎뒗 ?곌린 寃쎈줈 吏??- Directed Testbench 湲곕컲 湲곕뒫 寃利?- SVA 湲곕컲 ?꾨줈?좎퐳 Assertion 諛?Coverage ?섏쭛
+## 기능
 
-## 湲곗닠 ?ㅽ깮
+- 32-bit AXI4-Lite Slave 인터페이스 구현
+- AW, W, B, AR, R 채널 분리 기반의 표준 AXI4-Lite 트랜잭션 처리
+- `WSTRB`를 이용한 Byte-enable Write 지원
+- Read FSM / Write FSM 기반 제어 로직 구현
+- Control, Status, Config, Error 및 Data Register를 포함한 16개 레지스터 맵 구성
+- 주소와 데이터가 순차적 또는 역순으로 도착하는 쓰기 시나리오 지원
+- Directed Testbench 기반 읽기/쓰기 검증
+- SVA 기반 프로토콜 체크 및 Coverage 수집
 
-- **?몄뼱**: SystemVerilog
-- **?ㅺ퀎 諛⑹떇**: RTL Design, Parameterized Module, `always_ff`, `always_comb`
-- **?꾨줈?좎퐳**: AXI4-Lite
-- **寃利?諛⑹떇**: Directed Testbench, SystemVerilog Assertions (SVA)
-- **?쒖빟 ?뚯씪**: [`constraints/Zybo-Z7-Master.xdc`](/c:/Users/rlaqj/Project/AXI4_Lite/constraints/Zybo-Z7-Master.xdc)
+## 기술 스택
 
-## ?꾨줈?앺듃 援ъ“
+- **언어**: SystemVerilog
+- **설계 방식**: RTL Design, Parameterized Module
+- **프로토콜**: AXI4-Lite
+- **검증 방식**: Directed Testbench, SystemVerilog Assertions (SVA)
+
+## 프로젝트 구조
 
 ```text
 AXI4_Lite/
@@ -59,17 +63,3 @@ AXI4_Lite/
 |   +-- axi_top.sv
 +-- LICENSE
 +-- README.md
-```
-
-## 寃곌낵
-
-- AXI4-Lite Slave, Register Map, Top Module濡?援ъ꽦???ㅺ퀎 ?먯궛怨?Testbench, SVA Monitor濡?援ъ꽦??寃利??먯궛??紐⑤몢 援ъ텞
-- 32-bit ?곗씠????낵 16媛??덉??ㅽ꽣 怨듦컙??媛뽯뒗 Register-mapped 援ъ“ 援ы쁽
-- 11媛?Assertion?쇰줈 VALID ?좎?, ?곗씠???덉젙?? Reset ?숈옉, Write ?쒖꽌 ?쒖빟 寃利?- 6媛?Coverage Point濡?二쇱슂 handshake 諛?back-to-back write ?쒕굹由ъ삤 愿李?媛??- ?ㅺ퀎? 寃利앹쓣 ?④퍡 ?ㅻ챸?????덈뒗 ?ы듃?대━??臾몄꽌 ?뺥깭濡??뺣━
-
-## ?뚯씪 ?ㅻ챸
-
-- [`src/axi_top.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_top.sv): AXI Slave? Register Map???곌껐?섎뒗 Top Module
-- [`src/axi_lite_slave.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_lite_slave.sv): AXI4-Lite ?쎄린/?곌린 ?쒖뼱 濡쒖쭅
-- [`src/axi_register_map.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/src/axi_register_map.sv): ?덉??ㅽ꽣 留?諛??곗씠?????援ъ“
-- [`sim/tb_axi.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/tb_axi.sv): Directed 湲곕뒫 寃利앹슜 ?뚯뒪?몃깽移?- [`sim/axi_sva.sv`](/c:/Users/rlaqj/Project/AXI4_Lite/sim/axi_sva.sv): AXI4-Lite ?꾨줈?좎퐳 Assertion 諛?Coverage
