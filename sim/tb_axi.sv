@@ -71,6 +71,38 @@ module tb_axi;
         .s_axi_rvalid(s_axi_rvalid)
     );
 
+    axi_protocol_sva u_sva (
+        .aclk   (clk),
+        .aresetn(resetn),
+        
+        // Write Address Channel
+        .awaddr (s_axi_awaddr),
+        .awvalid(s_axi_awvalid),
+        .awready(s_axi_awready),
+        
+        // Write Data Channel
+        .wdata  (s_axi_wdata),
+        .wstrb  (s_axi_wstrb),
+        .wvalid (s_axi_wvalid),
+        .wready (s_axi_wready),
+        
+        // Write Response Channel
+        .bresp  (s_axi_bresp),
+        .bvalid (s_axi_bvalid),
+        .bready (s_axi_bready),
+        
+        // Read Address Channel
+        .araddr (s_axi_araddr),
+        .arvalid(s_axi_arvalid),
+        .arready(s_axi_arready),
+        
+        // Read Data Channel
+        .rdata  (s_axi_rdata),
+        .rresp  (s_axi_rresp),
+        .rvalid (s_axi_rvalid),
+        .rready (s_axi_rready)
+    );
+
     // clk (Period - 100MHz)
     initial begin
         clk = 0;
@@ -301,6 +333,7 @@ module tb_axi;
         // 최종 판정
         if (test_fail == 0) begin
             $display("*** ALL TESTS PASSED ***");
+            $display("*** NO SVA ERRORS ***");
             $display("The AXI-Lite slave is functioning correctly.\n");
             $finish(0);   // 정상 종료 (exit code 0)
         end else begin
