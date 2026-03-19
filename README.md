@@ -1,6 +1,6 @@
 # AXI4_Lite
 
-간단한 AXI4-Lite Slave + Register Map + Testbench 연습 프로젝트입니다.
+간단한 AXI4-Lite Slave + Register Map + Testbench 프로젝트입니다.
 
 ## 구성
 - `src/axi_lite_slave.sv`: AXI4-Lite read/write FSM
