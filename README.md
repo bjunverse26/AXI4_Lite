@@ -1,60 +1,54 @@
 # AXI4-Lite Slave Design Project
 
-32-bit AXI4-Lite Slave와 Register Map을 설계하고, Directed Testbench와 SVA로 기능 및 프로토콜 동작을 검증한 RTL 프로젝트입니다.
+32-bit AXI4-Lite Slave와 Register Map을 직접 설계하고, Directed Testbench와 SystemVerilog Assertions(SVA)로 기능 동작과 protocol 안정성을 검증한 RTL 프로젝트입니다.
 
 ## 프로젝트 개요
 
-이 프로젝트는 AXI4-Lite 기반의 메모리 맵 인터페이스를 직접 설계하고, 읽기/쓰기 동작이 정상적으로 수행되는지 검증하는 것을 목표로 합니다.  
-단순 기능 확인에 그치지 않고, Assertion 기반 검증을 추가해 프로토콜 안정성까지 함께 확인할 수 있도록 구성했습니다.
+이 프로젝트는 AXI4-Lite 기반의 memory-mapped slave 구조를 구현하는 것을 목표로 합니다.  
+AW, W, B, AR, R channel을 분리해서 처리하고, AXI4-Lite write transaction에서 발생할 수 있는 `AW->W`, `W->AW`, `AW+W` same-cycle case를 모두 처리하도록 설계했습니다.
+
+검증은 testbench와 SVA를 분리한 구조로 구성했습니다. Testbench는 directed scenario와 결과 summary를 담당하고, SVA는 AXI4-Lite protocol 규칙과 coverage를 독립적으로 확인합니다.
 
 ## 한눈에 보기
 
 | 항목 | 내용 |
 | --- | --- |
-| 프로젝트 유형 | RTL 설계 + 기능 검증 + 프로토콜 검증 |
+| 프로젝트 유형 | RTL 설계 + 기능 검증 + protocol 검증 |
 | 인터페이스 | AXI4-Lite |
 | 데이터 폭 | 32-bit |
-| 레지스터 공간 | 총 16개 |
-| 주요 검증 자산 | Directed Testbench, SVA |
-| 정량 성과 | 11 Assertions, 6 Coverage Points, 4개 주요 시나리오, 5개 데이터 체크 |
+| Register 공간 | 16개 register |
+| 검증 방식 | Directed Testbench, SVA |
+| 주요 검증 항목 | write ordering, backpressure, invalid address, zero strobe |
 
 ## 핵심 성과
 
-### 1. AXI4-Lite Slave 서브시스템 직접 설계
-- Before: 단순 인터페이스 이해 수준
-- After: [`rtl/axi_lite_slave.sv`](rtl/axi_lite_slave.sv), [`rtl/axi_register_map.sv`](rtl/axi_register_map.sv), [`rtl/axi_top.sv`](rtl/axi_top.sv)로 분리된 32-bit AXI4-Lite Slave 구조 설계
-
-### 2. 확장 가능한 16개 레지스터 맵 구현
-- Before: 소수 레지스터 중심의 단순 구조
-- After: 4개 주요 레지스터와 12개 데이터 레지스터를 포함한 총 16개 주소 공간 구성
-
-### 3. 다양한 쓰기 타이밍 케이스를 처리하는 FSM 구현
-- Before: 주소와 데이터가 항상 같은 순서로 도착한다고 가정할 가능성 존재
-- After: `AW->W`, `W->AW`, `AW+W 동시`의 3가지 쓰기 시나리오를 처리하도록 Write FSM 설계
-
-### 4. 설계 결과를 정량적으로 검증
-- Before: 단순 읽기/쓰기 결과 확인 중심
-- After: [`tb/tb_axi.sv`](tb/tb_axi.sv)의 4개 주요 시나리오, 5개 데이터 검증 케이스와 [`tb/axi_sva.sv`](tb/axi_sva.sv)의 11개 Assertion, 6개 Coverage Point로 검증 범위를 수치화
+- AXI4-Lite Slave, Register Map, Top Module로 구성된 RTL 구조 구현
+- `AW->W`, `W->AW`, `AW+W` same-cycle write transaction 처리
+- `BREADY`, `RREADY` backpressure 상황에서 response/data 안정성 검증
+- invalid address read/write 및 zero-strobe write response 검증
+- SVA를 별도 모듈로 분리해 protocol assertion과 coverage 관리
+- Directed test 8개 scenario와 AXI4-Lite 필수 assertion을 통해 검증 흐름 정리
 
 ## 기능
 
-- 32-bit AXI4-Lite Slave 인터페이스 설계
-- AW, W, B, AR, R 채널 분리 기반 트랜잭션 처리
-- Read FSM / Write FSM 기반 제어 로직 구현
-- `WSTRB`를 이용한 Byte-enable Write 지원
-- Control, Status, Config, Error, Data Register를 포함한 16개 레지스터 맵 구성
-- 주소와 데이터의 순차, 역순, 동시 도착을 처리하는 쓰기 경로 지원
-- Directed Testbench 기반 기능 검증
-- SVA 기반 프로토콜 Assertion 및 Coverage 수집
+- 32-bit AXI4-Lite Slave interface
+- AW, W, B, AR, R channel 기반 transaction 처리
+- Write FSM / Read FSM 기반 제어 logic
+- 16-entry memory-mapped register space
+- `WSTRB` 기반 byte-enable write
+- Register readback 및 status read 지원
+- Invalid access와 zero-strobe case에 대한 response 확인
+- SVA 기반 `VALID/READY`, payload stability, bounded response 검증
 
 ## 기술 스택
 
 | 구분 | 내용 |
 | --- | --- |
 | 언어 | SystemVerilog |
-| 설계 방식 | RTL Design, Parameterized Module |
-| 프로토콜 | AXI4-Lite |
-| 검증 방식 | Directed Testbench, SystemVerilog Assertions (SVA) |
+| 설계 방식 | RTL Design |
+| Protocol | AXI4-Lite |
+| 검증 방식 | Directed Testbench, SystemVerilog Assertions |
+| 시뮬레이터 | Vivado XSIM |
 
 ## 프로젝트 구조
 
@@ -64,34 +58,32 @@ AXI4_Lite/
 |   +-- Zybo-Z7-Master.xdc
 +-- docs/
 |   +-- 0. AXI4-Lite Portfolio.pdf
-+-- tb/
-|   +-- axi_sva.sv
-|   +-- tb_axi.sv
 +-- rtl/
 |   +-- axi_lite_slave.sv
 |   +-- axi_register_map.sv
 |   +-- axi_top.sv
++-- tb/
+|   +-- axi_protocol_sva.sv
+|   +-- tb_axi_sva.sv
 +-- LICENSE
 +-- README.md
 ```
 
-## 주요 파일
-
-- [`rtl/axi_top.sv`](rtl/axi_top.sv): AXI Slave와 Register Map을 연결하는 Top Module
-- [`rtl/axi_lite_slave.sv`](rtl/axi_lite_slave.sv): AXI4-Lite 읽기/쓰기 제어 로직
-- [`rtl/axi_register_map.sv`](rtl/axi_register_map.sv): 레지스터 맵 및 데이터 저장 구조
-- [`tb/tb_axi.sv`](tb/tb_axi.sv): Directed 기능 검증용 테스트벤치
-- [`tb/axi_sva.sv`](tb/axi_sva.sv): AXI4-Lite 프로토콜 Assertion 및 Coverage
-
 ## 결과
 
-- AXI4-Lite Slave, Register Map, Top Module로 구성된 설계 자산 구축
-- Testbench와 SVA Monitor로 구성된 검증 자산 구축
-- 32-bit 데이터 폭과 16개 레지스터 공간을 갖는 Register-mapped 구조 구현
-- 11개 Assertion으로 VALID 유지, 데이터 안정성, Reset 동작, Write 순서 제약 검증
-- 6개 Coverage Point로 주요 handshake 및 back-to-back write 시나리오 관찰 가능
+- [`rtl/axi_lite_slave.sv`](rtl/axi_lite_slave.sv), [`rtl/axi_register_map.sv`](rtl/axi_register_map.sv), [`rtl/axi_top.sv`](rtl/axi_top.sv)로 AXI4-Lite Slave 구조 구현
+- [`tb/tb_axi_sva.sv`](tb/tb_axi_sva.sv)에서 8개 directed scenario 검증
+- [`tb/axi_protocol_sva.sv`](tb/axi_protocol_sva.sv)에서 AXI4-Lite 필수 protocol assertion 및 coverage 확인
+- 시뮬레이션 결과 기준 test fail 없이 전체 scenario 통과
+
+예상 시뮬레이션 결과:
+
+```text
+*** ALL TESTS PASSED ***
+[SVA PASS] All required AXI-Lite assertions passed.
+```
 
 ## 참고
 
-- 보드 제약 파일: [`constraints/Zybo-Z7-Master.xdc`](constraints/Zybo-Z7-Master.xdc)
-- 프로젝트 문서: [`docs/0. AXI4-Lite Portfolio.pdf`](docs/0.%20AXI4-Lite%20Portfolio.pdf)
+- Board constraint file: [`constraints/Zybo-Z7-Master.xdc`](constraints/Zybo-Z7-Master.xdc)
+- Project document: [`docs/0. AXI4-Lite Portfolio.pdf`](docs/0.%20AXI4-Lite%20Portfolio.pdf)
