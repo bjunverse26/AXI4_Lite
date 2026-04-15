@@ -77,6 +77,10 @@ AXI4_Lite/
 예상 시뮬레이션 결과:
 
 ```text
+Total Tests:    5
+Passed:         11
+Failed:         0
+Pass Rate:      100%
 *** ALL TESTS PASSED ***
 [SVA PASS] All required AXI-Lite assertions passed.
 ```
