@@ -87,5 +87,5 @@ Pass Rate:      100%
 
 ## 참고
 
-- Board constraint file: [`constraints/Zybo-Z7-Master.xdc`](constraints/Zybo-Z7-Master.xdc)
+- Board constraint file: [`top.xdc`](constraints/top.xdc)
 - Project document: [`docs/0. AXI4-Lite Portfolio.pdf`](docs/0.%20AXI4-Lite%20Portfolio.pdf)
