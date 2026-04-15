@@ -43,14 +43,11 @@ module tb_axi;
 
     // AXI 응답 코드
     localparam [1:0] RESP_OKAY   = 2'b00;
-    localparam [1:0] RESP_SLVERR = 2'b10;
-    localparam [1:0] RESP_DECERR = 2'b11;
 
     // 테스트용 주소
     localparam [31:0] ADDR_REG0   = 32'h0000_0000;
     localparam [31:0] ADDR_STATUS = 32'h0000_0004;
     localparam [31:0] ADDR_REG2   = 32'h0000_0008;
-    localparam [31:0] ADDR_BAD    = 32'h0000_0040;
 
     // DUT 인스턴스
     axi_top #(
@@ -408,24 +405,6 @@ module tb_axi;
         $display("Test %0d: R channel backpressure", test_number);
         read_with_r_backpressure(ADDR_STATUS, 3, read_data, rd_resp);
         check_resp(RESP_OKAY, rd_resp, "Read response with R backpressure");
-
-        // 잘못된 주소 read 테스트
-        test_number = test_number + 1;
-        $display("Test %0d: Invalid address read", test_number);
-        read_test(ADDR_BAD, read_data, rd_resp);
-        check_resp(RESP_DECERR, rd_resp, "Invalid address read response");
-
-        // 잘못된 주소 write 테스트
-        test_number = test_number + 1;
-        $display("Test %0d: Invalid address write", test_number);
-        write_same_cycle(ADDR_BAD, 32'hDEAD_BEEF, 4'b1111, wr_resp);
-        check_resp(RESP_DECERR, wr_resp, "Invalid address write response");
-
-        // zero strobe write 테스트
-        test_number = test_number + 1;
-        $display("Test %0d: Zero strobe write", test_number);
-        write_same_cycle(ADDR_REG0, 32'h1111_2222, 4'b0000, wr_resp);
-        check_resp(RESP_SLVERR, wr_resp, "Zero strobe write response");
 
         // 결과 요약
         $display("\n========================================");

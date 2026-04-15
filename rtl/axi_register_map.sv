@@ -17,7 +17,7 @@ module axi_register_map #(
 );
 
     logic [DATA_WIDTH-1:0]              data_reg [11:0];
-    integer i;
+    integer i, j, k;
 
     // WRITE
     always_ff @(posedge clk or negedge resetn) begin
@@ -29,20 +29,20 @@ module axi_register_map #(
             end
         end else begin
             if (reg_wen[0]) begin
-                for (int i = 0; i < 4; i++) begin
-                    if (reg_wstrb[i]) control_reg[8*i +: 8] <= reg_wdata[8*i +: 8];
+                for (j = 0; j < 4; j++) begin
+                    if (reg_wstrb[j]) control_reg[8*j +: 8] <= reg_wdata[8*j +: 8];
                 end
             end
 
             if (reg_wen[2]) begin
-                for (int i = 0; i < 4; i++) begin
-                    if (reg_wstrb[i]) config_reg[8*i +: 8] <= reg_wdata[8*i +: 8];
+                for (j = 0; j < 4; j++) begin
+                    if (reg_wstrb[j]) config_reg[8*j +: 8] <= reg_wdata[8*j +: 8];
                 end
             end
 
             for (i = 0; i < 12; i++) begin
                 if (reg_wen[i+4]) begin
-                    for (int j = 0; j < 4; j++) begin
+                    for (j = 0; j < 4; j++) begin
                         if (reg_wstrb[j]) data_reg[i][8*j +: 8] <= reg_wdata[8*j +: 8];
                     end
                 end
@@ -57,8 +57,8 @@ module axi_register_map #(
         reg_rdata[2] = config_reg;
         reg_rdata[3] = error_reg;
 
-        for (i = 0; i < 12; i++) begin
-            reg_rdata[i+4] = data_reg[i];
+        for (k = 0; k < 12; k++) begin
+            reg_rdata[k+4] = data_reg[k];
         end
     end
 

@@ -18,16 +18,15 @@ AW, W, B, AR, R channel을 분리해서 처리하고, AXI4-Lite write transactio
 | 데이터 폭 | 32-bit |
 | Register 공간 | 16개 register |
 | 검증 방식 | Directed Testbench, SVA |
-| 주요 검증 항목 | write ordering, backpressure, invalid address, zero strobe |
+| 주요 검증 항목 | write ordering, backpressure, register readback |
 
 ## 핵심 성과
 
 - AXI4-Lite Slave, Register Map, Top Module로 구성된 RTL 구조 구현
 - `AW->W`, `W->AW`, `AW+W` same-cycle write transaction 처리
 - `BREADY`, `RREADY` backpressure 상황에서 response/data 안정성 검증
-- invalid address read/write 및 zero-strobe write response 검증
 - SVA를 별도 모듈로 분리해 protocol assertion과 coverage 관리
-- Directed test 8개 scenario와 AXI4-Lite 필수 assertion을 통해 검증 흐름 정리
+- Directed test 5개 scenario와 AXI4-Lite 필수 assertion을 통해 검증 흐름 정리
 
 ## 기능
 
@@ -37,7 +36,6 @@ AW, W, B, AR, R channel을 분리해서 처리하고, AXI4-Lite write transactio
 - 16-entry memory-mapped register space
 - `WSTRB` 기반 byte-enable write
 - Register readback 및 status read 지원
-- Invalid access와 zero-strobe case에 대한 response 확인
 - SVA 기반 `VALID/READY`, payload stability, bounded response 검증
 
 ## 기술 스택
@@ -72,7 +70,7 @@ AXI4_Lite/
 ## 결과
 
 - [`rtl/axi_lite_slave.sv`](rtl/axi_lite_slave.sv), [`rtl/axi_register_map.sv`](rtl/axi_register_map.sv), [`rtl/axi_top.sv`](rtl/axi_top.sv)로 AXI4-Lite Slave 구조 구현
-- [`tb/tb_axi_sva.sv`](tb/tb_axi_sva.sv)에서 8개 directed scenario 검증
+- [`tb/tb_axi_sva.sv`](tb/tb_axi_sva.sv)에서 5개 directed scenario 검증
 - [`tb/axi_protocol_sva.sv`](tb/axi_protocol_sva.sv)에서 AXI4-Lite 필수 protocol assertion 및 coverage 확인
 - 시뮬레이션 결과 기준 test fail 없이 전체 scenario 통과
 
