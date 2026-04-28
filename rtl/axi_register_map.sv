@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module axi_register_map #(
     parameter                       DATA_WIDTH = 32,
     parameter                       NUM_REGS = 16
