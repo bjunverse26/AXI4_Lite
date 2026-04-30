@@ -36,11 +36,19 @@ module AxiProtocolSva (
     input logic        i_rready
 );
 
+    //==============================================================================
+    // Protocol Constants
+    //==============================================================================
+
     localparam logic [1:0] RESP_OKAY   = 2'b00;
     localparam logic [1:0] RESP_SLVERR = 2'b10;
     localparam logic [1:0] RESP_DECERR = 2'b11;
 
     integer r_sva_error_count = 0;
+
+    //==============================================================================
+    // Handshake Sequences
+    //==============================================================================
 
     sequence aw_hs;
         i_awvalid && i_awready;
@@ -53,6 +61,10 @@ module AxiProtocolSva (
     sequence ar_hs;
         i_arvalid && i_arready;
     endsequence
+
+    //==============================================================================
+    // Protocol Properties
+    //==============================================================================
 
     property aw_valid_stable;
         @(posedge i_aclk) disable iff (!i_aresetn)
@@ -130,6 +142,10 @@ module AxiProtocolSva (
         i_rvalid |-> (i_rresp inside {RESP_OKAY, RESP_SLVERR, RESP_DECERR});
     endproperty
 
+    //==============================================================================
+    // Assertions
+    //==============================================================================
+
     assert_aw_valid_stable: assert property (aw_valid_stable)
         else begin r_sva_error_count++; $error("[SVA FAIL] AWVALID dropped before AWREADY"); end
 
@@ -175,6 +191,10 @@ module AxiProtocolSva (
     assert_valid_rresp_values: assert property (valid_rresp_values)
         else begin r_sva_error_count++; $error("[SVA FAIL] Invalid RRESP value"); end
 
+    //==============================================================================
+    // Coverage
+    //==============================================================================
+
     cover_aw_handshake: cover property (@(posedge i_aclk) i_awvalid && i_awready);
     cover_w_handshake : cover property (@(posedge i_aclk) i_wvalid  && i_wready);
     cover_b_handshake : cover property (@(posedge i_aclk) i_bvalid  && i_bready);
@@ -187,6 +207,10 @@ module AxiProtocolSva (
         @(posedge i_aclk) i_awvalid && i_awready && i_wvalid && i_wready
     );
     cover_read_to_r: cover property (@(posedge i_aclk) ar_hs ##[0:16] (i_rvalid && i_rready));
+
+    //==============================================================================
+    // Final Summary
+    //==============================================================================
 
     final begin
         if (r_sva_error_count == 0) begin

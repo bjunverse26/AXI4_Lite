@@ -10,6 +10,10 @@
 
 `timescale 1ns / 1ps
 
+//==============================================================================
+// Testbench Interface
+//==============================================================================
+
 interface AxiLiteIf #(
     parameter int ADDR_WIDTH = 32,
     parameter int DATA_WIDTH = 32
@@ -60,6 +64,10 @@ endinterface
 
 module TbAxiSva;
 
+    //==============================================================================
+    // Testbench Parameters And State
+    //==============================================================================
+
     localparam int ADDR_WIDTH = 32;
     localparam int DATA_WIDTH = 32;
     localparam int NUM_REGS   = 16;
@@ -77,12 +85,20 @@ module TbAxiSva;
     int unsigned r_test_pass;
     int unsigned r_test_fail;
 
+    //==============================================================================
+    // Interface Instance
+    //==============================================================================
+
     AxiLiteIf #(
         .ADDR_WIDTH (ADDR_WIDTH),
         .DATA_WIDTH (DATA_WIDTH)
     ) axi_if (
         .i_aclk (w_aclk)
     );
+
+    //==============================================================================
+    // DUT Instantiation
+    //==============================================================================
 
     AxiTop #(
         .ADDR_WIDTH (ADDR_WIDTH),
@@ -110,6 +126,10 @@ module TbAxiSva;
         .i_s_axi_rready  (axi_if.i_s_axi_rready)
     );
 
+    //==============================================================================
+    // Protocol Monitor
+    //==============================================================================
+
     AxiProtocolSva u_sva (
         .i_aclk     (axi_if.i_aclk),
         .i_aresetn  (axi_if.i_aresetn),
@@ -132,10 +152,18 @@ module TbAxiSva;
         .i_rready   (axi_if.i_s_axi_rready)
     );
 
+    //==============================================================================
+    // Clock Generation
+    //==============================================================================
+
     initial begin
         w_aclk = 1'b0;
         forever #(CLK_PERIOD / 2) w_aclk = ~w_aclk;
     end
+
+    //==============================================================================
+    // Test Sequence
+    //==============================================================================
 
     initial begin
         init_interface();
@@ -148,6 +176,10 @@ module TbAxiSva;
         report_summary();
     end
 
+    //==============================================================================
+    // Utility Functions
+    //==============================================================================
+
     function automatic string resp_to_string(input logic [1:0] resp);
         case (resp)
             2'b00: resp_to_string = "OKAY";
@@ -156,6 +188,10 @@ module TbAxiSva;
             2'b11: resp_to_string = "DECERR";
         endcase
     endfunction
+
+    //==============================================================================
+    // Initialization And Reset Tasks
+    //==============================================================================
 
     task automatic init_interface();
         begin
@@ -220,6 +256,10 @@ module TbAxiSva;
             end
         end
     endtask
+
+    //==============================================================================
+    // Bus Driver Tasks
+    //==============================================================================
 
     task automatic write_aw_then_w(
         input  logic [31:0] addr,
@@ -321,6 +361,10 @@ module TbAxiSva;
         end
     endtask
 
+    //==============================================================================
+    // Read Driver Tasks
+    //==============================================================================
+
     task automatic read_data(
         input  logic [31:0] addr,
         output logic [31:0] data,
@@ -362,6 +406,10 @@ module TbAxiSva;
             axi_if.i_s_axi_rready = 1'b0;
         end
     endtask
+
+    //==============================================================================
+    // Directed Test Scenarios
+    //==============================================================================
 
     task automatic run_aw_then_w_case();
         logic [1:0] wr_resp;
@@ -430,6 +478,10 @@ module TbAxiSva;
             check_data(32'hABCD_1234, r_read_data, "Status register readback");
         end
     endtask
+
+    //==============================================================================
+    // Summary Reporting
+    //==============================================================================
 
     task automatic report_summary();
         begin
