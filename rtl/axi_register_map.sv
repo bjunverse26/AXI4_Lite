@@ -1,5 +1,5 @@
 //==============================================================================
-// File Name   : AxiRegisterMap.sv
+// File Name   : axi_register_map.sv
 // Project     : AXI4_Lite
 // Author      : Beomjun Kim
 // Description : Memory-mapped register bank for the AXI4-Lite slave.

@@ -1,5 +1,5 @@
 //==============================================================================
-// File Name   : AxiLiteSlave.sv
+// File Name   : axi_lite_slave.sv
 // Project     : AXI4_Lite
 // Author      : Beomjun Kim
 // Description : AXI4-Lite slave protocol engine with independent read and write

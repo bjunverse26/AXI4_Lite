@@ -1,5 +1,5 @@
 //==============================================================================
-// File Name   : TbAxiSva.sv
+// File Name   : tb_axi_sva.sv
 // Project     : AXI4_Lite
 // Author      : Beomjun Kim
 // Description : Directed self-checking testbench for the AXI4-Lite register

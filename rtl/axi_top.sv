@@ -1,5 +1,5 @@
 //==============================================================================
-// File Name   : AxiTop.sv
+// File Name   : axi_top.sv
 // Project     : AXI4_Lite
 // Author      : Beomjun Kim
 // Description : Top-level integration of the AXI4-Lite slave protocol engine and

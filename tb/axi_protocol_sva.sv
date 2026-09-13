@@ -1,5 +1,5 @@
 //==============================================================================
-// File Name   : AxiProtocolSva.sv
+// File Name   : axi_protocol_sva.sv
 // Project     : AXI4_Lite
 // Author      : Beomjun Kim
 // Description : AXI4-Lite protocol assertion and coverage monitor.
